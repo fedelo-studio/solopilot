@@ -1,3 +1,14 @@
+# Source of truth for Supabase auth configuration synced via `supabase config push`.
+# Note: the CLI synchronises the FULL [auth] section against remote — any field
+# omitted here gets reset to the CLI default on push. If you change a setting
+# in the Supabase dashboard, mirror it here or the next push will revert it.
+# [auth.rate_limit] is NOT pushed by this CLI (silently ignored); set it in
+# the dashboard if needed.
+#
+# To push with SMTP credentials: `RESEND_API_KEY=re_... supabase config push`.
+# Without the env var set, the `pass` field resolves to empty and the next
+# push will break magic-link emails — handle with care.
+
 project_id = "solopilot"
 
 [auth]
@@ -19,3 +30,12 @@ otp_expiry = 3600
 [auth.mfa.totp]
 enroll_enabled = true
 verify_enabled = true
+
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY)"
+admin_email = "noreply@send.fedelo.studio"
+sender_name = "SoloPilot"
