@@ -1,0 +1,402 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   SoloPilot — visual language by Fedelo Studio
+   - Strawford (display) + JetBrains Mono (meta / numerals)
+   - Light is the default mode; .dark overrides per shadcn pattern
+   - Accent --hot = #ff4a1c (Fedelo brand orange), used sparingly
+   - Calm, editorial, table-friendly. Less is more.
+   Source of truth: fedelo.studio/design-system/tokens.css
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* ─── Brand-neutral surfaces & ink ─── */
+    --background: 0 0% 98%;             /* #fafafa — page */
+    --foreground: 0 0% 2%;              /* #050505 — ink */
+
+    --card: 0 0% 100%;                  /* #ffffff — surface */
+    --card-foreground: 0 0% 2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 2%;
+
+    /* shadcn semantic neutrals, derived from the Fedelo palette */
+    --primary: 0 0% 2%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 2%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 38%;
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 2%;
+
+    --destructive: 11 100% 55%;         /* aligned with --hot */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 92%;                 /* ≈ rgba(10,10,10,.08) */
+    --input: 0 0% 88%;
+    --ring: 11 100% 55%;
+
+    /* ─── Brand accent — Fedelo "hot" orange ─── */
+    --hot: 11 100% 55%;                 /* #ff4a1c */
+    --hot-foreground: 0 0% 100%;
+    --hot-soft: 11 100% 95%;
+
+    /* ─── Financial semantics — Fedelo editorial restraint
+     * Calm, desaturated tones. Soft variants are near-white tints, NOT pastel
+     * candy washes. Only --hot is a true brand colour; every other status uses
+     * a sophisticated, low-saturation hue closer to ink than to a primary. */
+
+    /* CONFIRMED — deep teal: cash that's already real */
+    --confirmed: 172 48% 30%;           /* #28746a — restrained teal */
+    --confirmed-foreground: 0 0% 100%;
+    --confirmed-soft: 170 22% 96%;      /* barely-tinted teal wash */
+    --confirmed-line: 170 28% 86%;      /* hair-thin border */
+
+    /* PROBABLE — slate indigo: weighted forecast */
+    --probable: 222 32% 42%;            /* #495a7e — sophisticated slate */
+    --probable-foreground: 0 0% 100%;
+    --probable-soft: 222 24% 96%;
+    --probable-line: 222 26% 88%;
+
+    /* HYPOTHETICAL — true neutral, no tint */
+    --hypothetical: 0 0% 38%;           /* #616161 */
+    --hypothetical-foreground: 0 0% 100%;
+    --hypothetical-soft: 0 0% 96%;
+    --hypothetical-line: 0 0% 90%;
+
+    /* WARNING — warm ochre, not banana yellow */
+    --warning: 30 65% 40%;              /* #a86a25 — editorial ochre */
+    --warning-foreground: 0 0% 100%;
+    --warning-soft: 32 45% 96%;
+    --warning-line: 32 45% 88%;
+
+    /* DANGER — deep crimson, distinct from the brand orange */
+    --danger: 4 62% 44%;                /* #b73a2e — refined red */
+    --danger-foreground: 0 0% 100%;
+    --danger-soft: 4 50% 97%;
+    --danger-line: 4 50% 90%;
+
+    /* ─── Geometry ─── */
+    --radius: 0.75rem;                  /* 12px — editorial, not playful */
+
+    /* ─── Typography ─── */
+    --font-sans: var(--font-strawford), "Strawford", -apple-system,
+                 BlinkMacSystemFont, system-ui, sans-serif;
+    --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace,
+                 SFMono-Regular, Menlo, monospace;
+
+    /* ─── Motion (Fedelo signature ease) ─── */
+    --ease-out:  cubic-bezier(0.2, 0.7, 0.2, 1);
+    --ease-snap: cubic-bezier(0.32, 0.72, 0, 1);
+    --t-fast: 150ms;
+    --t-base: 250ms;
+    --t-slow: 400ms;
+  }
+
+  .dark {
+    /* Mirror of Fedelo .theme-dark — surface-level, calm */
+    --background: 0 0% 3%;              /* #080808 */
+    --foreground: 60 6% 96%;            /* #f5f5f2 */
+
+    --card: 0 0% 9%;                    /* #161616 */
+    --card-foreground: 60 6% 96%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 60 6% 96%;
+
+    --primary: 60 6% 96%;
+    --primary-foreground: 0 0% 3%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 60 6% 96%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 60 4% 65%;
+    --accent: 0 0% 14%;
+    --accent-foreground: 60 6% 96%;
+
+    --destructive: 11 100% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 60 6% 14%;
+    --input: 60 6% 16%;
+    --ring: 11 100% 60%;
+
+    --hot: 11 100% 60%;
+    --hot-foreground: 0 0% 100%;
+    --hot-soft: 11 60% 18%;
+
+    /* Dark mode mirrors the same editorial restraint —
+     * desaturated text, near-ink soft surfaces, faint borders. */
+    --confirmed: 172 42% 60%;
+    --confirmed-foreground: 0 0% 8%;
+    --confirmed-soft: 172 22% 11%;
+    --confirmed-line: 172 22% 22%;
+
+    --probable: 222 38% 70%;
+    --probable-foreground: 0 0% 8%;
+    --probable-soft: 222 22% 12%;
+    --probable-line: 222 22% 24%;
+
+    --hypothetical: 0 0% 65%;
+    --hypothetical-foreground: 0 0% 8%;
+    --hypothetical-soft: 0 0% 12%;
+    --hypothetical-line: 0 0% 22%;
+
+    --warning: 30 70% 64%;
+    --warning-foreground: 0 0% 8%;
+    --warning-soft: 30 22% 12%;
+    --warning-line: 30 22% 22%;
+
+    --danger: 4 65% 62%;
+    --danger-foreground: 0 0% 100%;
+    --danger-soft: 4 25% 12%;
+    --danger-line: 4 25% 24%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  body {
+    font-family: var(--font-sans);
+    /* Fedelo body defaults — calm tracking, generous line height */
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: hsl(var(--hot) / 0.85);
+    color: hsl(var(--hot-foreground));
+  }
+
+  /* ─── Display & headings — Fedelo type system ─── */
+  .t-display {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(48px, 6vw + 16px, 72px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .t-h1 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(28px, 2.5vw + 18px, 40px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .t-h2 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: clamp(20px, 1vw + 16px, 24px);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .t-h3 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─── Numerals — tabular, mono-tinged for the cockpit ─── */
+  .num {
+    font-feature-settings: "tnum", "lnum", "ss01";
+    font-variant-numeric: tabular-nums;
+  }
+  .money {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-feature-settings: "tnum", "lnum";
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─── Mono eyebrow / caption (Fedelo signature meta) ─── */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;        /* 11px */
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: hsl(var(--muted-foreground));
+  }
+  .eyebrow-hot {
+    color: hsl(var(--hot));
+  }
+  .eyebrow-led::before {
+    content: "";
+    display: inline-block;
+    width: 1.25rem;
+    height: 1px;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    background: hsl(var(--hot));
+  }
+  .caption {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: hsl(var(--muted-foreground));
+  }
+  /* Tiny meta tier — for kbd, row hints, micro-annotations.
+   * Replaces ad-hoc `text-[10px]` / `text-[11px]` usage. */
+  .t-meta {
+    font-size: 0.6875rem;        /* 11px */
+    line-height: 1.2;
+    color: hsl(var(--muted-foreground));
+  }
+  .t-meta-num {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    color: hsl(var(--muted-foreground));
+  }
+  /* Keyboard hint — used in command palette, shortcuts, search trigger. */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    border-radius: 0.25rem;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--muted));
+    font-family: var(--font-mono);
+    font-size: 0.625rem;         /* 10px */
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(var(--muted-foreground));
+    user-select: none;
+  }
+}
+
+@layer utilities {
+  /* ─── Scrollbars ─── */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 999px;
+  }
+
+  /* ─── Live indicator — hot pulse ─── */
+  .live-dot {
+    position: relative;
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background-color: hsl(var(--hot));
+  }
+  .live-dot::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 999px;
+    background-color: hsl(var(--hot) / 0.45);
+    animation: live-pulse 1.6s ease-out infinite;
+  }
+  @keyframes live-pulse {
+    0%   { transform: scale(0.8); opacity: 0.7; }
+    80%  { transform: scale(2.4); opacity: 0; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+
+  /* ─── Skeleton shimmer ─── */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--accent)) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.6s linear infinite;
+    border-radius: var(--radius);
+  }
+  @keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ─── Entrance animations ─── */
+  .enter-fade {
+    animation: enter-fade 0.4s var(--ease-out) both;
+  }
+  .enter-fade-delayed {
+    animation: enter-fade 0.4s var(--ease-out) 0.08s both;
+  }
+  @keyframes enter-fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── Hot glow — for primary CTAs ─── */
+  .glow-brand {
+    box-shadow:
+      0 0 0 1px hsl(var(--hot) / 0.20),
+      0 12px 32px -10px hsl(var(--hot) / 0.45);
+  }
+
+  /* NOTE: The Fedelo CTA pill and ghost-pill button styles previously lived here
+   * as standalone CSS classes. They have been consolidated into the shadcn
+   * <Button> primitive (variants: `default` = CTA pill, `outline` = ghost pill).
+   * Anywhere a "Fedelo pill" is needed, use <Button variant="default" /> or
+   * <Button variant="outline" />. Single source of truth, single set of states. */
+
+  /* ─── Brand wordmark loader — preserved from before ─── */
+  .brand-logo-loader .brand-logo-base {
+    opacity: 0.16;
+  }
+  .brand-logo-loader .brand-logo-fill {
+    clip-path: inset(0 100% 0 0);
+    animation: brand-logo-fill 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    will-change: clip-path, opacity;
+  }
+  @keyframes brand-logo-fill {
+    0%   { clip-path: inset(0 100% 0 0); opacity: 1; }
+    65%  { clip-path: inset(0 0% 0 0);   opacity: 1; }
+    88%  { clip-path: inset(0 0% 0 0);   opacity: 1; }
+    100% { clip-path: inset(0 0% 0 0);   opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot::after,
+    .skeleton,
+    .enter-fade,
+    .enter-fade-delayed {
+      animation: none !important;
+    }
+    .brand-logo-loader .brand-logo-fill {
+      animation: none !important;
+      clip-path: none !important;
+      opacity: 1 !important;
+    }
+    .brand-logo-loader .brand-logo-base {
+      opacity: 0 !important;
+    }
+  }
+}

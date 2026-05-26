@@ -1,0 +1,7 @@
+# pnpm 11+ config — autorise les build scripts post-install pour les paquets nécessaires.
+# Ces 4 paquets doivent pouvoir compiler des binaires natifs (sharp, esbuild) ou
+# des resolvers (unrs-resolver pour Next.js). Sans ça, Next.js dev ne démarre pas.
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
