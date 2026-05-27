@@ -85,7 +85,7 @@ export default async function AlertesPage() {
           <TabsContent value="info" className="space-y-2">
             {groups.info.length === 0 ? (
               <p className="py-8 text-center text-sm text-muted-foreground">
-                Aucune info pour l'instant.
+                Aucune info pour l&apos;instant.
               </p>
             ) : (
               groups.info.map((a) => <AlertCard key={a.id} alert={a} />)
@@ -98,16 +98,16 @@ export default async function AlertesPage() {
         <CardHeader>
           <CardTitle>Comment les alertes sont calculées</CardTitle>
           <CardDescription>
-            SoloPilot regarde l'état actuel de tes données et applique ces règles.
+            SoloPilot regarde l&apos;état actuel de tes données et applique ces règles.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
           <Rule label="Facture en retard">
-            Si la date d'échéance est passée et que la facture n'est pas payée, statut → en
+            Si la date d&apos;échéance est passée et que la facture n&apos;est pas payée, statut → en
             retard, alerte critique avec le solde dû et le nombre de jours.
           </Rule>
           <Rule label="Dépense non catégorisée">
-            Si une dépense n'a pas de catégorie, alerte d'avertissement.
+            Si une dépense n&apos;a pas de catégorie, alerte d&apos;avertissement.
           </Rule>
           <Rule label="Budget &gt; 80%">
             Avertissement quand le mois en cours approche du budget. À 100%+, alerte critique.
@@ -116,7 +116,7 @@ export default async function AlertesPage() {
             Info de relance pour les deals ouverts depuis longtemps.
           </Rule>
           <Rule label="Trésorerie basse">
-            Avertissement sous 5'000 CHF, critique sous 2'500. Seuil configurable.
+            Avertissement sous 5&apos;000 CHF, critique sous 2&apos;500. Seuil configurable.
           </Rule>
         </CardContent>
       </Card>
@@ -124,7 +124,7 @@ export default async function AlertesPage() {
       <p className="mt-4 text-xs text-muted-foreground">
         Pour les relances automatiques par email,{" "}
         <Link href="/aide" className="underline underline-offset-2">
-          consulte la doc de l'edge function
+          consulte la doc de l&apos;edge function
         </Link>
         .
       </p>

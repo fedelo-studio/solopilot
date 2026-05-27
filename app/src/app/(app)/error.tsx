@@ -21,7 +21,7 @@ export default function ErrorBoundary({
         <BrandWordmark height={32} />
         <div className="eyebrow">Erreur inattendue</div>
       </div>
-      <h2 className="t-display text-2xl">Quelque chose s'est mal passé.</h2>
+      <h2 className="t-display text-2xl">Quelque chose s&apos;est mal passé.</h2>
       <p className="max-w-md text-sm text-muted-foreground">
         Le cockpit a rencontré une erreur. Tu peux réessayer — si ça persiste, recharge la page.
       </p>

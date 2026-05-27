@@ -86,7 +86,7 @@ export function NewExpenseDialog({ categories, clients, projects, deals }: NewEx
         <DialogHeader>
           <DialogTitle>Nouvelle dépense</DialogTitle>
           <DialogDescription>
-            Lie une dépense à un prospect, client ou projet pour qu'elle impacte la marge.
+            Lie une dépense à un prospect, client ou projet pour qu&apos;elle impacte la marge.
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">

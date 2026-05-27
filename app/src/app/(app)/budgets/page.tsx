@@ -127,7 +127,7 @@ export default async function BudgetsPage() {
 
       <p className="mt-6 text-xs text-muted-foreground">
         Note : les budgets ne remplacent pas une comptabilité. Ils servent à piloter le rythme
-        de tes dépenses par catégorie. Les seuils d'alerte sont configurables.
+        de tes dépenses par catégorie. Les seuils d&apos;alerte sont configurables.
       </p>
     </div>
   );

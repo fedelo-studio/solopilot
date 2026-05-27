@@ -10,9 +10,9 @@ export default function NotFound() {
           <BrandWordmark height={32} />
           <div className="eyebrow">Erreur 404</div>
         </div>
-        <h1 className="t-display text-3xl">Cette page n'existe pas.</h1>
+        <h1 className="t-display text-3xl">Cette page n&apos;existe pas.</h1>
         <p className="max-w-md text-sm text-muted-foreground">
-          Soit le lien est cassé, soit l'élément a été supprimé. Reviens au tableau de bord pour
+          Soit le lien est cassé, soit l&apos;élément a été supprimé. Reviens au tableau de bord pour
           retrouver ton activité.
         </p>
         <Button asChild>

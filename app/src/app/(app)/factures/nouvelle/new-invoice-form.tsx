@@ -288,7 +288,7 @@ export function NewInvoiceForm({ clients, projects, defaultNumber, defaultVatRat
       <FormActions pending={pending} submitLabel="Créer la facture" pendingLabel="Création…" />
 
       <p className="text-xs text-muted-foreground">
-        Hypothèse produit : la TVA est saisie par ligne et n'est ni vérifiée ni déclarée
+        Hypothèse produit : la TVA est saisie par ligne et n&apos;est ni vérifiée ni déclarée
         automatiquement. À valider avec un comptable selon ton régime fiscal.
       </p>
     </form>

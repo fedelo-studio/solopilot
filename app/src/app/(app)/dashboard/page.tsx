@@ -88,7 +88,7 @@ export default async function DashboardPage() {
         eyebrow={
           <span className="inline-flex items-center gap-2">
             <span className="live-dot" />
-            Vue d'ensemble · live
+            Vue d&apos;ensemble · live
           </span>
         }
         title={`Bonjour ${settings.ownerName.split(" ")[0]}.`}

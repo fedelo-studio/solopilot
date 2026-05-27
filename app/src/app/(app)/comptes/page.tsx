@@ -104,7 +104,7 @@ export default async function ComptesPage() {
         <CardContent className="p-0">
           {transactions.length === 0 ? (
             <p className="px-5 pb-5 text-sm text-muted-foreground">
-              Aucune transaction pour l'instant. Importe un CSV pour commencer.
+              Aucune transaction pour l&apos;instant. Importe un CSV pour commencer.
             </p>
           ) : (
             <Table>

@@ -140,7 +140,7 @@ export function OnboardingWizard({ initial }: { initial: CompanySettings }) {
           <CardHeader>
             <CardTitle>Ton entreprise</CardTitle>
             <CardDescription>
-              Ces infos apparaîtront sur tes factures et dans l'interface. Tu pourras tout changer
+              Ces infos apparaîtront sur tes factures et dans l&apos;interface. Tu pourras tout changer
               plus tard dans les Paramètres.
             </CardDescription>
           </CardHeader>
@@ -206,7 +206,7 @@ export function OnboardingWizard({ initial }: { initial: CompanySettings }) {
           <CardHeader>
             <CardTitle>Premier compte</CardTitle>
             <CardDescription>
-              Ajoute un compte bancaire ou un espèces pour qu'on puisse calculer ton cash réel.
+              Ajoute un compte bancaire ou un espèces pour qu&apos;on puisse calculer ton cash réel.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

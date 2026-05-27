@@ -53,7 +53,7 @@ export default function LoginPage() {
           <CardHeader>
             <CardTitle>Se connecter</CardTitle>
             <CardDescription>
-              On t'envoie un lien magique pour entrer en un clic. Pas besoin de mot de passe.
+              On t&apos;envoie un lien magique pour entrer en un clic. Pas besoin de mot de passe.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -82,11 +82,11 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter className="flex-col items-start gap-2 border-t border-border/70 pt-4">
             <p className="text-xs text-muted-foreground">
-              En continuant, tu acceptes les conditions d'utilisation de SoloPilot.
+              En continuant, tu acceptes les conditions d&apos;utilisation de SoloPilot.
             </p>
             {!isSupabaseReady ? (
               <p className="text-xs text-warning">
-                Mode démo — l'authentification réelle s'activera après configuration de
+                Mode démo — l&apos;authentification réelle s&apos;activera après configuration de
                 Supabase (voir <code className="rounded bg-muted px-1">.env.local.example</code>).
               </p>
             ) : null}

@@ -49,7 +49,7 @@ export function AccountForm({ account }: Props) {
         <CardHeader>
           <CardTitle>Compte</CardTitle>
           <CardDescription>
-            Le solde initial est ton point de départ. Les transactions s'ajoutent par-dessus.
+            Le solde initial est ton point de départ. Les transactions s&apos;ajoutent par-dessus.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

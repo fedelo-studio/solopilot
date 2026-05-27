@@ -8,7 +8,7 @@
     "demo": "NEXT_PUBLIC_DATA_MODE=mock next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
     "seed": "tsx scripts/seed.ts",

@@ -147,7 +147,7 @@ export function CategoriesList({ categories }: Props) {
         </CardHeader>
         <CardContent className="divide-y divide-border/70">
           {categories.length === 0 ? (
-            <p className="py-6 text-sm text-muted-foreground">Aucune catégorie pour l'instant.</p>
+            <p className="py-6 text-sm text-muted-foreground">Aucune catégorie pour l&apos;instant.</p>
           ) : (
             categories.map((cat) => {
               const isEditing = editingId === cat.id;
@@ -217,8 +217,8 @@ export function CategoriesList({ categories }: Props) {
           <DialogHeader>
             <DialogTitle>Supprimer la catégorie ?</DialogTitle>
             <DialogDescription>
-              "{confirmDelete?.name}" sera supprimée. Les dépenses liées garderont la couleur "À
-              catégoriser". Les budgets de cette catégorie seront supprimés.
+              &quot;{confirmDelete?.name}&quot; sera supprimée. Les dépenses liées garderont la couleur &quot;À
+              catégoriser&quot;. Les budgets de cette catégorie seront supprimés.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

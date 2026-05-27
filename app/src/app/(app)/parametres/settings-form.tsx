@@ -35,7 +35,7 @@ export function SettingsForm({ initial }: { initial: CompanySettings }) {
         <CardHeader>
           <CardTitle>Identité</CardTitle>
           <CardDescription>
-            Apparaît sur les factures et dans l'interface.
+            Apparaît sur les factures et dans l&apos;interface.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
