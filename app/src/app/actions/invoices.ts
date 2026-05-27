@@ -44,6 +44,7 @@ const InvoiceCreateSchema = z.object({
   clientId: z.string().min(1, "Sélectionne un client"),
   projectId: z.string().optional(),
   number: z.string().optional(),
+  issuedAt: z.string().optional(),
   dueDate: z.string().min(1, "Date d'échéance requise"),
   status: z.enum(["draft", "sent"]).default("draft"),
   notes: z.string().optional(),
@@ -262,6 +263,8 @@ export async function updateInvoice(
     mockInvoicesStore.update(parsed.data.id, {
       clientId: parsed.data.clientId,
       projectId: parsed.data.projectId || undefined,
+      number: parsed.data.number?.trim() || current.number,
+      issuedAt: parsed.data.issuedAt || current.issuedAt,
       dueDate: parsed.data.dueDate,
       status: parsed.data.status,
       subtotal,
@@ -275,19 +278,23 @@ export async function updateInvoice(
   }
 
   const { userId, supabase } = session.session;
+  const invoiceUpdates: Record<string, unknown> = {
+    client_id: parsed.data.clientId,
+    project_id: parsed.data.projectId || null,
+    due_date: parsed.data.dueDate,
+    status: parsed.data.status,
+    subtotal,
+    vat_amount: vatAmount,
+    total,
+    notes: parsed.data.notes || null,
+    updated_at: new Date().toISOString(),
+  };
+  if (parsed.data.number?.trim()) invoiceUpdates.number = parsed.data.number.trim();
+  if (parsed.data.issuedAt) invoiceUpdates.issued_at = parsed.data.issuedAt;
+
   const { error: updateError } = await supabase
     .from("invoices")
-    .update({
-      client_id: parsed.data.clientId,
-      project_id: parsed.data.projectId || null,
-      due_date: parsed.data.dueDate,
-      status: parsed.data.status,
-      subtotal,
-      vat_amount: vatAmount,
-      total,
-      notes: parsed.data.notes || null,
-      updated_at: new Date().toISOString(),
-    })
+    .update(invoiceUpdates)
     .eq("id", parsed.data.id)
     .eq("user_id", userId);
   if (updateError) return fail(updateError.message);

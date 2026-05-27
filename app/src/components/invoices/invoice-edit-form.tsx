@@ -47,6 +47,8 @@ export function InvoiceEditForm({ invoice, clients, projects }: Props) {
   const [status, setStatus] = useState<"draft" | "sent">(
     invoice.status === "sent" ? "sent" : "draft",
   );
+  const [number, setNumber] = useState(invoice.number);
+  const [issuedAt, setIssuedAt] = useState(invoice.issuedAt);
   const [dueDate, setDueDate] = useState(invoice.dueDate);
   const [notes, setNotes] = useState(invoice.notes ?? "");
   const [lines, setLines] = useState<LineDraft[]>(
@@ -87,6 +89,8 @@ export function InvoiceEditForm({ invoice, clients, projects }: Props) {
         id: invoice.id,
         clientId,
         projectId: projectId || undefined,
+        number,
+        issuedAt,
         dueDate,
         status,
         notes: notes || undefined,
@@ -107,16 +111,13 @@ export function InvoiceEditForm({ invoice, clients, projects }: Props) {
       <Card>
         <CardHeader>
           <CardTitle>Informations</CardTitle>
-          <CardDescription>
-            Le numéro de facture ne peut pas être modifié après création.
-          </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-3">
-          <FormField label="Numéro">
-            <Input value={invoice.number} readOnly className="cursor-not-allowed bg-muted/30" />
+          <FormField label="Numéro" required>
+            <Input value={number} onChange={(e) => setNumber(e.target.value)} required />
           </FormField>
-          <FormField label="Émise le">
-            <Input value={invoice.issuedAt} readOnly className="cursor-not-allowed bg-muted/30" />
+          <FormField label="Émise le" required>
+            <Input type="date" value={issuedAt} onChange={(e) => setIssuedAt(e.target.value)} required />
           </FormField>
           <FormField label="Échéance" required>
             <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />

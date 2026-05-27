@@ -45,6 +45,8 @@ export function QuoteEditForm({ quote, clients }: Props) {
   const [status, setStatus] = useState<"draft" | "sent">(
     quote.status === "sent" ? "sent" : "draft",
   );
+  const [number, setNumber] = useState(quote.number);
+  const [issuedAt, setIssuedAt] = useState(quote.issuedAt);
   const [validUntil, setValidUntil] = useState(quote.validUntil ?? "");
   const [notes, setNotes] = useState(quote.notes ?? "");
   const [lines, setLines] = useState<LineDraft[]>(
@@ -80,6 +82,8 @@ export function QuoteEditForm({ quote, clients }: Props) {
       const result = await updateQuote({
         id: quote.id,
         clientId,
+        number,
+        issuedAt,
         validUntil: validUntil || undefined,
         status,
         notes: notes || undefined,
@@ -100,14 +104,13 @@ export function QuoteEditForm({ quote, clients }: Props) {
       <Card>
         <CardHeader>
           <CardTitle>Informations</CardTitle>
-          <CardDescription>Le numéro de devis ne change pas après création.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-3">
-          <FormField label="Numéro">
-            <Input value={quote.number} readOnly className="cursor-not-allowed bg-muted/30" />
+          <FormField label="Numéro" required>
+            <Input value={number} onChange={(e) => setNumber(e.target.value)} required />
           </FormField>
-          <FormField label="Émis le">
-            <Input value={quote.issuedAt} readOnly className="cursor-not-allowed bg-muted/30" />
+          <FormField label="Émis le" required>
+            <Input type="date" value={issuedAt} onChange={(e) => setIssuedAt(e.target.value)} required />
           </FormField>
           <FormField label="Valide jusqu'au">
             <Input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />

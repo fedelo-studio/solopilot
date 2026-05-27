@@ -45,6 +45,7 @@ const QuoteCreateSchema = z.object({
   clientId: z.string().min(1, "Sélectionne un client"),
   dealId: z.string().optional(),
   number: z.string().optional(),
+  issuedAt: z.string().optional(),
   validUntil: z.string().optional(),
   status: z.enum(["draft", "sent"]).default("draft"),
   notes: z.string().optional(),
@@ -336,10 +337,13 @@ export async function updateQuote(
   const paths = [`/devis/${parsed.data.id}`, "/devis"];
 
   if (session.session.mode === "mock") {
-    if (!mockQuotesStore.get(parsed.data.id)) return fail("Devis introuvable");
+    const current = mockQuotesStore.get(parsed.data.id);
+    if (!current) return fail("Devis introuvable");
     mockQuotesStore.update(parsed.data.id, {
       clientId: parsed.data.clientId,
       dealId: parsed.data.dealId || undefined,
+      number: parsed.data.number?.trim() || current.number,
+      issuedAt: parsed.data.issuedAt || current.issuedAt,
       validUntil: parsed.data.validUntil || undefined,
       status: parsed.data.status,
       subtotal,
@@ -353,18 +357,22 @@ export async function updateQuote(
   }
 
   const { userId, supabase } = session.session;
+  const quoteUpdates: Record<string, unknown> = {
+    client_id: parsed.data.clientId,
+    valid_until: parsed.data.validUntil || null,
+    status: parsed.data.status,
+    subtotal,
+    vat_amount: vatAmount,
+    total,
+    notes: parsed.data.notes || null,
+    updated_at: new Date().toISOString(),
+  };
+  if (parsed.data.number?.trim()) quoteUpdates.number = parsed.data.number.trim();
+  if (parsed.data.issuedAt) quoteUpdates.issued_at = parsed.data.issuedAt;
+
   const { error: updateError } = await supabase
     .from("quotes")
-    .update({
-      client_id: parsed.data.clientId,
-      valid_until: parsed.data.validUntil || null,
-      status: parsed.data.status,
-      subtotal,
-      vat_amount: vatAmount,
-      total,
-      notes: parsed.data.notes || null,
-      updated_at: new Date().toISOString(),
-    })
+    .update(quoteUpdates)
     .eq("id", parsed.data.id)
     .eq("user_id", userId);
 
