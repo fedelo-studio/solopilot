@@ -26,7 +26,7 @@ for (const { path, heading, allowLogin } of PAGES) {
     if (allowLogin && page.url().endsWith("/login")) {
       await expect(page.getByText(/Se connecter|Lien magique/i)).toBeVisible();
     } else {
-      await expect(page.getByRole("heading", { name: heading })).toBeVisible();
+      await expect(page.getByRole("heading", { name: heading, level: 1 })).toBeVisible();
     }
   });
 }
