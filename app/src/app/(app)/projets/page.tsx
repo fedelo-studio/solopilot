@@ -35,7 +35,7 @@ export default async function ProjetsPage() {
         title="Projets"
         description={
           <>
-            La marge réelle d'un projet =
+            La marge réelle d&apos;un projet =
             <span className="font-medium text-foreground"> vendu − interne − dépenses liées</span>.
             Cette vue agrège les dépenses rattachées à chaque projet.
           </>

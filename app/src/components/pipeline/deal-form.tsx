@@ -64,7 +64,7 @@ export function DealEditForm({ deal, clients }: Props) {
       <Card>
         <CardHeader>
           <CardTitle>Deal</CardTitle>
-          <CardDescription>Modifie l'opportunité et son contexte.</CardDescription>
+          <CardDescription>Modifie l&apos;opportunité et son contexte.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <FormField label="Titre" required>

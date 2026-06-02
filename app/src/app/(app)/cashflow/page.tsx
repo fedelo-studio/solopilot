@@ -27,7 +27,7 @@ export default async function CashflowPage() {
 
       <p className="mt-6 text-xs text-muted-foreground">
         Hypothèses produit : les deals sont projetés à la valeur pondérée (réaliste) ou pleine
-        (optimiste) sur leur date de paiement attendue. Aucune règle fiscale n'est appliquée
+        (optimiste) sur leur date de paiement attendue. Aucune règle fiscale n&apos;est appliquée
         automatiquement — à valider avec un comptable.
       </p>
     </div>

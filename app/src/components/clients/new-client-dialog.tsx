@@ -66,7 +66,7 @@ export function NewClientDialog() {
         <DialogHeader>
           <DialogTitle>Nouveau client</DialogTitle>
           <DialogDescription>
-            Un prospect devient un client dès qu'un deal est gagné.
+            Un prospect devient un client dès qu&apos;un deal est gagné.
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
