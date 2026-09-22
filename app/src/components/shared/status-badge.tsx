@@ -5,11 +5,13 @@ import type {
   ProjectStatus,
   ClientStatus,
   QuoteStatus,
+  TaskStatus,
 } from "@/types/domain";
 import {
   INVOICE_STATUS_LABELS,
   DEAL_STAGE_LABELS,
   QUOTE_STATUS_LABELS,
+  TASK_STATUS_LABELS,
 } from "@/types/domain";
 
 const INVOICE_VARIANT: Record<InvoiceStatus, "default" | "confirmed" | "probable" | "warning" | "danger" | "hypothetical"> = {
@@ -81,4 +83,16 @@ const QUOTE_VARIANT: Record<QuoteStatus, "default" | "confirmed" | "probable" | 
 
 export function QuoteStatusBadge({ status }: { status: QuoteStatus }) {
   return <Badge variant={QUOTE_VARIANT[status]}>{QUOTE_STATUS_LABELS[status]}</Badge>;
+}
+
+const TASK_VARIANT: Record<TaskStatus, "default" | "confirmed" | "probable" | "warning" | "danger" | "hypothetical"> = {
+  todo: "hypothetical",
+  in_progress: "probable",
+  review: "warning",
+  blocked: "danger",
+  done: "confirmed",
+};
+
+export function TaskStatusBadge({ status }: { status: TaskStatus }) {
+  return <Badge variant={TASK_VARIANT[status]}>{TASK_STATUS_LABELS[status]}</Badge>;
 }

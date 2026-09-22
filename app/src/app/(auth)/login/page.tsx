@@ -26,18 +26,25 @@ export default function LoginPage() {
       return;
     }
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-    if (error) {
+      if (error) {
+        setStatus("error");
+        setErrorMessage(error.message);
+      } else {
+        setStatus("sent");
+      }
+    } catch {
       setStatus("error");
-      setErrorMessage(error.message);
-    } else {
-      setStatus("sent");
+      setErrorMessage(
+        "Impossible de contacter Supabase. Vérifie ta connexion et que le projet est bien actif.",
+      );
     }
   }
 

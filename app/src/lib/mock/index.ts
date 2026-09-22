@@ -5,6 +5,9 @@
 export { mockClients, mockContacts } from "./clients";
 export { mockDeals } from "./deals";
 export { mockProjects } from "./projects";
+export { mockPeople } from "./people";
+export { mockTasks } from "./tasks";
+export { mockTimeEntries } from "./time-entries";
 export { mockInvoices } from "./invoices";
 export { mockInvoicePayments } from "./payments";
 export { mockQuotes } from "./quotes";

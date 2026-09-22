@@ -16,7 +16,15 @@ import { FormField } from "@/components/shared/form-field";
 import { FormActions } from "@/components/shared/form-actions";
 import { FormError } from "@/components/shared/form-error";
 import { updateProject } from "@/app/actions/projects";
-import type { Client, Deal, Project, ProjectStatus } from "@/types/domain";
+import {
+  PROJECT_BILLING_TYPES,
+  PROJECT_BILLING_TYPE_LABELS,
+  type Client,
+  type Deal,
+  type Project,
+  type ProjectBillingType,
+  type ProjectStatus,
+} from "@/types/domain";
 
 interface Props {
   project: Project;
@@ -32,6 +40,7 @@ export function ProjectEditForm({ project, clients, deals }: Props) {
   const [status, setStatus] = useState<ProjectStatus>(project.status);
   const [soldBudget, setSoldBudget] = useState(project.soldBudget);
   const [internalBudget, setInternalBudget] = useState(project.internalBudget);
+  const [billingType, setBillingType] = useState<ProjectBillingType>(project.billingType);
   const [error, setError] = useState<string | null>(null);
 
   const filteredDeals = deals.filter((d) => d.clientId === clientId && d.stage !== "lost");
@@ -44,11 +53,15 @@ export function ProjectEditForm({ project, clients, deals }: Props) {
       const result = await updateProject({
         id: project.id,
         name: String(fd.get("name") ?? ""),
+        description: String(fd.get("description") ?? "") || undefined,
         clientId,
         dealId: dealId || undefined,
         status,
         soldBudget,
         internalBudget,
+        billingType,
+        hourlyRate: fd.get("hourlyRate") ? Number(fd.get("hourlyRate")) : undefined,
+        budgetHours: fd.get("budgetHours") ? Number(fd.get("budgetHours")) : undefined,
         startDate: String(fd.get("startDate") ?? "") || undefined,
         endDate: String(fd.get("endDate") ?? "") || undefined,
         notes: String(fd.get("notes") ?? "") || undefined,
@@ -68,6 +81,9 @@ export function ProjectEditForm({ project, clients, deals }: Props) {
         <CardContent className="space-y-4">
           <FormField label="Nom" required>
             <Input name="name" defaultValue={project.name} required autoFocus />
+          </FormField>
+          <FormField label="Description">
+            <Textarea name="description" rows={2} defaultValue={project.description ?? ""} />
           </FormField>
           <div className="grid gap-4 md:grid-cols-2">
             <FormField label="Client" required>
@@ -119,6 +135,40 @@ export function ProjectEditForm({ project, clients, deals }: Props) {
                 step={100}
                 value={internalBudget}
                 onChange={(e) => setInternalBudget(Number(e.target.value))}
+              />
+            </FormField>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <FormField label="Type de facturation">
+              <Select value={billingType} onValueChange={(v) => setBillingType(v as ProjectBillingType)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROJECT_BILLING_TYPES.map((t) => (
+                    <SelectItem key={t} value={t}>
+                      {PROJECT_BILLING_TYPE_LABELS[t]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+            <FormField label="Tarif horaire (CHF/h)" hint="Prime sur le tarif de chaque personne.">
+              <Input
+                name="hourlyRate"
+                type="number"
+                min={0}
+                step={5}
+                defaultValue={project.hourlyRate ?? ""}
+              />
+            </FormField>
+            <FormField label="Budget d'heures" hint="Optionnel.">
+              <Input
+                name="budgetHours"
+                type="number"
+                min={0}
+                step={1}
+                defaultValue={project.budgetHours ?? ""}
               />
             </FormField>
           </div>

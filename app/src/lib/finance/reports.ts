@@ -1,7 +1,17 @@
 import { format, parseISO, startOfMonth, subMonths } from "date-fns";
 import { fr } from "date-fns/locale";
-import type { Client, Expense, ExpenseCategory, Invoice, Project } from "@/types/domain";
+import type {
+  Client,
+  Expense,
+  ExpenseCategory,
+  Invoice,
+  Person,
+  Project,
+  Task,
+  TimeEntry,
+} from "@/types/domain";
 import { liveStatus } from "./invoices";
+import { hoursLogged, taskEstimateVsActual, timeCost } from "./projects";
 
 export interface MonthlyRevenuePoint {
   month: string; // ISO yyyy-MM-01
@@ -106,13 +116,21 @@ export interface ProjectMarginRow {
   cost: number;
   margin: number;
   marginPercent: number;
+  /** Hours tracked against the project — informational, not folded into `cost`/`margin`
+   *  (those stay budget-vs-expenses; tracked-time cost is a separate actuals view). */
+  hoursLogged: number;
+  timeCost: number;
 }
 
-/** Project profitability: sold − (internal budget + linked expenses). */
+/** Project profitability: sold − (internal budget + linked expenses).
+ *  `timeEntries`/`people` feed the informational hours/time-cost columns only —
+ *  they do not change `cost`/`margin`, see the comment on `ProjectMarginRow`. */
 export function projectMargins(
   projects: Project[],
   clients: Client[],
   expenses: Expense[],
+  timeEntries: TimeEntry[],
+  people: Person[],
 ): ProjectMarginRow[] {
   const clientById = new Map(clients.map((c) => [c.id, c]));
   return projects
@@ -123,9 +141,133 @@ export function projectMargins(
       const cost = p.internalBudget + linkedExpenses;
       const margin = p.soldBudget - cost;
       const marginPercent = p.soldBudget > 0 ? Math.round((margin / p.soldBudget) * 100) : 0;
-      return { project: p, client: clientById.get(p.clientId), cost, margin, marginPercent };
+      const projectEntries = timeEntries.filter((e) => e.projectId === p.id);
+      return {
+        project: p,
+        client: clientById.get(p.clientId),
+        cost,
+        margin,
+        marginPercent,
+        hoursLogged: hoursLogged(projectEntries),
+        timeCost: timeCost(projectEntries, people),
+      };
     })
     .sort((a, b) => b.margin - a.margin);
+}
+
+export interface ProjectHoursRow {
+  project: Project;
+  client?: Client;
+  hours: number;
+  billableHours: number;
+  nonBillableHours: number;
+  billablePercent: number;
+}
+
+/** Hours tracked per project (all-time — not windowed, matching `projectMargins`). */
+export function hoursByProject(
+  projects: Project[],
+  clients: Client[],
+  timeEntries: TimeEntry[],
+): ProjectHoursRow[] {
+  const clientById = new Map(clients.map((c) => [c.id, c]));
+  return projects
+    .map((p) => {
+      const entries = timeEntries.filter((e) => e.projectId === p.id);
+      const hours = hoursLogged(entries);
+      const billableHours = hoursLogged(entries.filter((e) => e.billable));
+      const nonBillableHours = hours - billableHours;
+      return {
+        project: p,
+        client: clientById.get(p.clientId),
+        hours,
+        billableHours,
+        nonBillableHours,
+        billablePercent: hours > 0 ? Math.round((billableHours / hours) * 100) : 0,
+      };
+    })
+    .filter((r) => r.hours > 0)
+    .sort((a, b) => b.hours - a.hours);
+}
+
+export interface PersonHoursRow {
+  person: Person;
+  hours: number;
+  billableHours: number;
+  nonBillableHours: number;
+  billablePercent: number;
+}
+
+/** Hours tracked per person (all-time). Not the same as `capacityBand`, which
+ *  compares a single week's entries against weekly capacity — this is a
+ *  reporting rollup over whatever period `timeEntries` already covers. */
+export function hoursByPerson(people: Person[], timeEntries: TimeEntry[]): PersonHoursRow[] {
+  return people
+    .map((person) => {
+      const entries = timeEntries.filter((e) => e.personId === person.id);
+      const hours = hoursLogged(entries);
+      const billableHours = hoursLogged(entries.filter((e) => e.billable));
+      const nonBillableHours = hours - billableHours;
+      return {
+        person,
+        hours,
+        billableHours,
+        nonBillableHours,
+        billablePercent: hours > 0 ? Math.round((billableHours / hours) * 100) : 0,
+      };
+    })
+    .filter((r) => r.hours > 0)
+    .sort((a, b) => b.hours - a.hours);
+}
+
+/** Overall billable-vs-non-billable split across every tracked hour. */
+export function billableUtilization(timeEntries: TimeEntry[]): {
+  billableHours: number;
+  nonBillableHours: number;
+  billablePercent: number;
+} {
+  const hours = hoursLogged(timeEntries);
+  const billableHours = hoursLogged(timeEntries.filter((e) => e.billable));
+  return {
+    billableHours,
+    nonBillableHours: hours - billableHours,
+    billablePercent: hours > 0 ? Math.round((billableHours / hours) * 100) : 0,
+  };
+}
+
+export interface TaskEstimateRow {
+  project: Project;
+  task: Task;
+  estimatedHours: number;
+  actualHours: number;
+  deltaHours: number;
+  deltaPercent: number | null;
+}
+
+/** Estimated-vs-actual across every task that has an estimate, sorted by the
+ *  biggest overrun/underrun first. Tasks without an estimate are excluded —
+ *  there's nothing to compare against. */
+export function estimateVsActualRows(
+  projects: Project[],
+  tasks: Task[],
+  timeEntries: TimeEntry[],
+): TaskEstimateRow[] {
+  const projectById = new Map(projects.map((p) => [p.id, p]));
+  return tasks
+    .filter((t) => t.estimatedHours != null)
+    .map((task) => {
+      const r = taskEstimateVsActual(task, timeEntries);
+      return {
+        project: projectById.get(task.projectId),
+        task,
+        estimatedHours: r.estimatedHours as number,
+        actualHours: r.actualHours,
+        deltaHours: r.deltaHours as number,
+        deltaPercent: r.deltaPercent,
+      };
+    })
+    .filter((r): r is TaskEstimateRow => r.project != null)
+    .sort((a, b) => Math.abs(b.deltaHours) - Math.abs(a.deltaHours));
 }
 
 /** High-level totals — paid + outstanding revenue + expenses + net for the period. */

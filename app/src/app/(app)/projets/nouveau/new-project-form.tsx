@@ -16,7 +16,14 @@ import { FormField } from "@/components/shared/form-field";
 import { FormActions } from "@/components/shared/form-actions";
 import { FormError } from "@/components/shared/form-error";
 import { createProject } from "@/app/actions/projects";
-import type { Client, Deal, ProjectStatus } from "@/types/domain";
+import {
+  PROJECT_BILLING_TYPES,
+  PROJECT_BILLING_TYPE_LABELS,
+  type Client,
+  type Deal,
+  type ProjectBillingType,
+  type ProjectStatus,
+} from "@/types/domain";
 
 export function NewProjectForm({
   clients,
@@ -32,6 +39,7 @@ export function NewProjectForm({
   const [status, setStatus] = useState<ProjectStatus>("active");
   const [soldBudget, setSoldBudget] = useState(0);
   const [internalBudget, setInternalBudget] = useState(0);
+  const [billingType, setBillingType] = useState<ProjectBillingType>("hourly");
   const [error, setError] = useState<string | null>(null);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -45,11 +53,15 @@ export function NewProjectForm({
     startTransition(async () => {
       const result = await createProject({
         name: String(fd.get("name") ?? ""),
+        description: String(fd.get("description") ?? "") || undefined,
         clientId,
         dealId: dealId || undefined,
         status,
         soldBudget,
         internalBudget,
+        billingType,
+        hourlyRate: fd.get("hourlyRate") ? Number(fd.get("hourlyRate")) : undefined,
+        budgetHours: fd.get("budgetHours") ? Number(fd.get("budgetHours")) : undefined,
         startDate: String(fd.get("startDate") ?? "") || undefined,
         endDate: String(fd.get("endDate") ?? "") || undefined,
         notes: String(fd.get("notes") ?? "") || undefined,
@@ -74,6 +86,9 @@ export function NewProjectForm({
         <CardContent className="space-y-4">
           <FormField label="Nom du projet" required>
             <Input name="name" placeholder="Refonte branding — Studio Lumen" required autoFocus />
+          </FormField>
+          <FormField label="Description" hint="Optionnel">
+            <Textarea name="description" rows={2} placeholder="Périmètre en une ou deux phrases…" />
           </FormField>
           <div className="grid gap-4 md:grid-cols-2">
             <FormField label="Client" required>
@@ -134,6 +149,28 @@ export function NewProjectForm({
                 value={internalBudget}
                 onChange={(e) => setInternalBudget(Number(e.target.value))}
               />
+            </FormField>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <FormField label="Type de facturation">
+              <Select value={billingType} onValueChange={(v) => setBillingType(v as ProjectBillingType)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROJECT_BILLING_TYPES.map((t) => (
+                    <SelectItem key={t} value={t}>
+                      {PROJECT_BILLING_TYPE_LABELS[t]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+            <FormField label="Tarif horaire (CHF/h)" hint="Optionnel — prime sur le tarif de chaque personne.">
+              <Input name="hourlyRate" type="number" min={0} step={5} />
+            </FormField>
+            <FormField label="Budget d'heures" hint="Optionnel.">
+              <Input name="budgetHours" type="number" min={0} step={1} />
             </FormField>
           </div>
           <div className="grid gap-4 md:grid-cols-3">

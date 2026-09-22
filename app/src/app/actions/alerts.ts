@@ -6,6 +6,9 @@ import {
   getDeals,
   getExpenses,
   getInvoices,
+  getPeople,
+  getProjects,
+  getTimeEntries,
 } from "@/lib/data";
 import { computeAlerts } from "@/lib/finance/alerts";
 import {
@@ -31,15 +34,28 @@ export async function recomputeAlerts(): Promise<ActionResult<{ created: number;
   const session = await getAuthedSession();
   if (!session.ok) return fail(session.error);
 
-  const [invoices, expenses, budgets, deals, accounts] = await Promise.all([
-    getInvoices(),
-    getExpenses(),
-    getBudgets(),
-    getDeals(),
-    getAccounts(),
-  ]);
+  const [invoices, expenses, budgets, deals, accounts, projects, people, timeEntries] =
+    await Promise.all([
+      getInvoices(),
+      getExpenses(),
+      getBudgets(),
+      getDeals(),
+      getAccounts(),
+      getProjects(),
+      getPeople(),
+      getTimeEntries(),
+    ]);
 
-  const seeds = computeAlerts({ invoices, expenses, budgets, deals, accounts });
+  const seeds = computeAlerts({
+    invoices,
+    expenses,
+    budgets,
+    deals,
+    accounts,
+    projects,
+    people,
+    timeEntries,
+  });
 
   if (session.session.mode === "mock") {
     // Mirror the live behavior end-to-end: diff seeds vs existing unresolved

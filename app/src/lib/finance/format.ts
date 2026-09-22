@@ -70,3 +70,19 @@ export function formatPercent(value: number, digits = 0): string {
     maximumFractionDigits: digits,
   }).format(value / 100);
 }
+
+/** "1 h 30" / "45 min" / "8 h" — used for time entries and hour budgets. */
+export function formatDuration(minutes: number): string {
+  const sign = minutes < 0 ? "-" : "";
+  const abs = Math.round(Math.abs(minutes));
+  const h = Math.floor(abs / 60);
+  const m = abs % 60;
+  if (h === 0) return `${sign}${m} min`;
+  if (m === 0) return `${sign}${h} h`;
+  return `${sign}${h} h ${String(m).padStart(2, "0")}`;
+}
+
+/** Format a decimal hour count (e.g. from a budget or estimate) the same way. */
+export function formatHours(hours: number): string {
+  return formatDuration(Math.round(hours * 60));
+}

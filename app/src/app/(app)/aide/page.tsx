@@ -9,6 +9,8 @@ const SHORTCUTS = [
   { keys: ["G", "D"], label: "Tableau de bord" },
   { keys: ["G", "C"], label: "Cashflow" },
   { keys: ["G", "P"], label: "Pipeline" },
+  { keys: ["G", "T"], label: "Temps" },
+  { keys: ["G", "E"], label: "Équipe" },
   { keys: ["G", "F"], label: "Factures" },
   { keys: ["G", "R"], label: "Rapports" },
   { keys: ["G", "A"], label: "Alertes" },

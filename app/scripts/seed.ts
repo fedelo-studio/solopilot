@@ -35,8 +35,11 @@ import {
   mockExpenses,
   mockInvoicePayments,
   mockInvoices,
+  mockPeople,
   mockProjects,
   mockQuotes,
+  mockTasks,
+  mockTimeEntries,
   mockTransactions,
 } from "../src/lib/mock";
 
@@ -88,6 +91,8 @@ async function main() {
   const invoiceMap = new Map<string, string>();
   const expenseMap = new Map<string, string>();
   const accountMap = new Map<string, string>();
+  const peopleMap = new Map<string, string>();
+  const taskMap = new Map<string, string>();
 
   // ---- Categories ----
   for (const c of mockExpenseCategories) categoryMap.set(c.id, id<string>());
@@ -135,6 +140,23 @@ async function main() {
   );
   if (contactErr) throw contactErr;
 
+  // ---- People (lightweight roster) ----
+  for (const p of mockPeople) peopleMap.set(p.id, id<string>());
+  const { error: peopleErr } = await admin.from("people").insert(
+    mockPeople.map((p) => ({
+      id: peopleMap.get(p.id),
+      user_id: userId,
+      name: p.name,
+      email: p.email,
+      cost_rate: p.costRate,
+      billable_rate: p.billableRate,
+      weekly_capacity_hours: p.weeklyCapacityHours,
+      is_active: p.isActive,
+      notes: p.notes,
+    })),
+  );
+  if (peopleErr) throw peopleErr;
+
   // ---- Deals ----
   for (const d of mockDeals) dealMap.set(d.id, id<string>());
   const { error: dealErr } = await admin.from("deals").insert(
@@ -166,16 +188,42 @@ async function main() {
       client_id: clientMap.get(p.clientId)!,
       deal_id: p.dealId ? dealMap.get(p.dealId) : null,
       name: p.name,
+      description: p.description,
       status: p.status,
       sold_budget: p.soldBudget,
       internal_budget: p.internalBudget,
       currency: p.currency,
+      billing_type: p.billingType,
+      hourly_rate: p.hourlyRate ?? null,
+      budget_hours: p.budgetHours ?? null,
+      tags: p.tags ?? null,
       start_date: p.startDate ?? null,
       end_date: p.endDate ?? null,
       notes: p.notes,
     })),
   );
   if (projectErr) throw projectErr;
+
+  // ---- Tasks ----
+  for (const t of mockTasks) taskMap.set(t.id, id<string>());
+  const { error: taskErr } = await admin.from("tasks").insert(
+    mockTasks.map((t) => ({
+      id: taskMap.get(t.id),
+      user_id: userId,
+      project_id: projectMap.get(t.projectId)!,
+      assignee_id: t.assigneeId ? peopleMap.get(t.assigneeId) : null,
+      title: t.title,
+      description: t.description,
+      status: t.status,
+      priority: t.priority,
+      category: t.category,
+      billable: t.billable,
+      estimated_hours: t.estimatedHours ?? null,
+      start_date: t.startDate ?? null,
+      due_date: t.dueDate ?? null,
+    })),
+  );
+  if (taskErr) throw taskErr;
 
   // ---- Invoices + lines ----
   for (const inv of mockInvoices) invoiceMap.set(inv.id, id<string>());
@@ -212,6 +260,23 @@ async function main() {
     const { error: lineErr } = await admin.from("invoice_lines").insert(allLines);
     if (lineErr) throw lineErr;
   }
+
+  // ---- Time entries (after invoices — some fixtures are pre-billed) ----
+  const { error: timeEntryErr } = await admin.from("time_entries").insert(
+    mockTimeEntries.map((e) => ({
+      user_id: userId,
+      project_id: projectMap.get(e.projectId)!,
+      task_id: e.taskId ? taskMap.get(e.taskId) : null,
+      person_id: peopleMap.get(e.personId)!,
+      date: e.date,
+      start_time: e.startTime ?? null,
+      duration_minutes: e.durationMinutes,
+      description: e.description,
+      billable: e.billable,
+      invoice_id: e.invoiceId ? invoiceMap.get(e.invoiceId) : null,
+    })),
+  );
+  if (timeEntryErr) throw timeEntryErr;
 
   // ---- Expenses ----
   for (const e of mockExpenses) expenseMap.set(e.id, id<string>());
@@ -368,6 +433,7 @@ async function main() {
   console.log(`Invoices: ${mockInvoices.length}, Quotes: ${mockQuotes.length}, Expenses: ${mockExpenses.length}`);
   console.log(`Payments: ${mockInvoicePayments.length}, Budgets: ${mockBudgets.length}, Accounts: ${mockAccounts.length}`);
   console.log(`Alerts: ${mockAlerts.length}`);
+  console.log(`People: ${mockPeople.length}, Tasks: ${mockTasks.length}, Time entries: ${mockTimeEntries.length}`);
 }
 
 main().catch((err) => {

@@ -101,6 +101,15 @@ export interface Deal {
 
 export type ProjectStatus = "active" | "paused" | "done" | "archived";
 
+export const PROJECT_BILLING_TYPES = ["hourly", "fixed_price", "retainer", "non_billable"] as const;
+export type ProjectBillingType = (typeof PROJECT_BILLING_TYPES)[number];
+export const PROJECT_BILLING_TYPE_LABELS: Record<ProjectBillingType, string> = {
+  hourly: "À l'heure",
+  fixed_price: "Forfait",
+  retainer: "Récurrent",
+  non_billable: "Non facturable",
+};
+
 export interface Project {
   id: ID;
   userId: ID;
@@ -108,15 +117,104 @@ export interface Project {
   /** Optional — a project can be created without a parent deal. */
   dealId?: ID;
   name: string;
+  description?: string;
   status: ProjectStatus;
   /** What the client pays. */
   soldBudget: number;
   /** What you allocate internally (subcontractors, time, costs). */
   internalBudget: number;
   currency: Currency;
+  billingType: ProjectBillingType;
+  /** Overrides each person's billableRate when invoicing tracked time, if set. */
+  hourlyRate?: number;
+  /** Planned hours for the project — unset means hour budget isn't tracked. */
+  budgetHours?: number;
+  tags?: string[];
   startDate?: string;
   endDate?: string;
   notes?: string;
+  createdAt: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// People — lightweight roster. NOT tied to Supabase auth: no logins, no
+// invites, no role-based permissions. Just enough to attribute time entries
+// and task assignment to a person (the studio owner or a subcontractor).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface Person {
+  id: ID;
+  userId: ID;
+  name: string;
+  email?: string;
+  costRate: number;
+  billableRate: number;
+  weeklyCapacityHours: number;
+  isActive: boolean;
+  notes?: string;
+  createdAt: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tasks
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const TASK_STATUSES = ["todo", "in_progress", "review", "blocked", "done"] as const;
+export type TaskStatus = (typeof TASK_STATUSES)[number];
+export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
+  todo: "À faire",
+  in_progress: "En cours",
+  review: "Relecture",
+  blocked: "Bloqué",
+  done: "Terminé",
+};
+
+export const TASK_PRIORITIES = ["low", "medium", "high", "urgent"] as const;
+export type TaskPriority = (typeof TASK_PRIORITIES)[number];
+export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
+  low: "Basse",
+  medium: "Normale",
+  high: "Haute",
+  urgent: "Urgente",
+};
+
+export interface Task {
+  id: ID;
+  userId: ID;
+  projectId: ID;
+  /** Optional — a task can be unassigned. */
+  assigneeId?: ID;
+  title: string;
+  description?: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  category?: string;
+  billable: boolean;
+  estimatedHours?: number;
+  startDate?: string;
+  dueDate?: string;
+  createdAt: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Time entries — attributed to a person, optionally to a task. `invoiceId`
+// is set once tracked time has been rolled into an invoice (mirrors quotes'
+// `convertedInvoiceId`) so an entry can never be billed twice.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface TimeEntry {
+  id: ID;
+  userId: ID;
+  projectId: ID;
+  /** Optional — time can be logged against a project without a specific task. */
+  taskId?: ID;
+  personId: ID;
+  date: string;
+  startTime?: string;
+  durationMinutes: number;
+  description?: string;
+  billable: boolean;
+  invoiceId?: ID;
   createdAt: string;
 }
 
@@ -332,7 +430,12 @@ export type AlertType =
   | "budget_near_limit"
   | "budget_exceeded"
   | "deal_stale"
-  | "cash_low";
+  | "cash_low"
+  | "project_hours_near_limit"
+  | "project_hours_exceeded"
+  | "project_deadline_approaching"
+  | "person_capacity_exceeded"
+  | "unbilled_time_stale";
 
 export type AlertSeverity = "info" | "warning" | "danger";
 
@@ -343,7 +446,7 @@ export interface Alert {
   severity: AlertSeverity;
   title: string;
   body?: string;
-  relatedType?: "invoice" | "expense" | "budget" | "deal" | "account";
+  relatedType?: "invoice" | "expense" | "budget" | "deal" | "account" | "project" | "person";
   relatedId?: ID;
   resolvedAt?: string;
   createdAt: string;

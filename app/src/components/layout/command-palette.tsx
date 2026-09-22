@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   Users,
+  UsersRound,
   TrendingUp,
   FolderKanban,
   Receipt,
@@ -17,6 +18,7 @@ import {
   Banknote,
   Bell,
   BarChart3,
+  Clock,
 } from "lucide-react";
 import {
   CommandDialog,
@@ -62,6 +64,8 @@ const QUICK_ACTIONS = [
   { label: "Devis", href: "/devis", icon: FileSignature },
   { label: "Clients", href: "/clients", icon: Users },
   { label: "Projets", href: "/projets", icon: FolderKanban },
+  { label: "Temps", href: "/temps", icon: Clock, shortcut: "g t" },
+  { label: "Équipe", href: "/equipe", icon: UsersRound, shortcut: "g e" },
   { label: "Factures", href: "/factures", icon: Receipt, shortcut: "g f" },
   { label: "Dépenses", href: "/depenses", icon: CreditCard },
   { label: "Budgets", href: "/budgets", icon: Wallet },
@@ -217,6 +221,8 @@ const SHORTCUTS: Array<{ keys: string[]; label: string }> = [
   { keys: ["G", "D"], label: "Aller au tableau de bord" },
   { keys: ["G", "C"], label: "Aller au cashflow" },
   { keys: ["G", "P"], label: "Aller au pipeline" },
+  { keys: ["G", "T"], label: "Aller au temps" },
+  { keys: ["G", "E"], label: "Aller à l'équipe" },
   { keys: ["G", "F"], label: "Aller aux factures" },
   { keys: ["G", "R"], label: "Aller aux rapports" },
   { keys: ["G", "S"], label: "Aller aux paramètres" },

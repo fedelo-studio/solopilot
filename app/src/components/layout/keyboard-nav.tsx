@@ -14,6 +14,8 @@ const ROUTES: Record<string, string> = {
   r: "/rapports",
   s: "/parametres",
   a: "/alertes",
+  t: "/temps",
+  e: "/equipe",
 };
 
 export function KeyboardNav() {

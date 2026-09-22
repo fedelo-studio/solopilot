@@ -31,7 +31,7 @@ export default async function AlertesPage() {
       <PageHeader
         eyebrow="Pilotage"
         title="Alertes"
-        description="Tous les signaux à traiter : factures en retard, dépenses non catégorisées, budgets dépassés, deals dormants."
+        description="Tous les signaux à traiter : factures en retard, budgets dépassés, deals dormants, échéances proches, capacité dépassée, temps non facturé."
         actions={<RecomputeAlertsButton />}
       />
 
@@ -117,6 +117,22 @@ export default async function AlertesPage() {
           </Rule>
           <Rule label="Trésorerie basse">
             Avertissement sous 5'000 CHF, critique sous 2'500. Seuil configurable.
+          </Rule>
+          <Rule label="Budget d'heures &gt; 75%">
+            Avertissement à 75% du budget d'heures d'un projet, critique à 90%, puis alerte de
+            dépassement à 100%+.
+          </Rule>
+          <Rule label="Échéance de projet proche">
+            Avertissement dans les 7 jours avant la date de fin d'un projet actif, critique à 2
+            jours ou moins.
+          </Rule>
+          <Rule label="Capacité dépassée">
+            Avertissement quand une personne active dépasse sa capacité hebdomadaire sur la
+            semaine en cours.
+          </Rule>
+          <Rule label="Temps facturable non facturé">
+            Avertissement après 14 jours de temps facturable non facturé sur un projet à l'heure,
+            critique après 28 jours.
           </Rule>
         </CardContent>
       </Card>
